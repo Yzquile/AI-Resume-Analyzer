@@ -22,11 +22,15 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader
 
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
 RUN npm install
 RUN npm run build
 
-RUN mkdir -p database
-RUN touch database/database.sqlite
+RUN mkdir -p database \
+    && touch database/database.sqlite \
+    && chmod -R 777 database storage bootstrap/cache
 
 RUN php artisan key:generate || true
 
